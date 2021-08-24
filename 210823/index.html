@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="script.js"></script>
+
+
+<div class="container">
+    <div class="row">
+        <form class="form-control">
+            <h1>회원정보수정</h1>
+            <div class="col-4">
+                이름 : <input type="text" placeholder="이름을 입력해주세요." required>
+            </div>
+
+            <div class="col-4 mt-3">
+                나이 : <input type="number" max="40" min="0" name="age" id="age" required>
+            </div>
+
+            <div class="col-4 mt-3">
+                성별 : 남자 <input type="radio" name="gender"> 여자 <input type="radio" name="gender">
+
+            </div>
+
+            <div class="col-4 mt-3">
+                취미 <select>
+                        <option value="0">선택</option>
+                        <option value="1">프로그래밍</option>
+                        <option value="2">독서</option>
+                        <option value="3">운동</option>
+                        <option value="4">게임</option>
+                    </select>
+            </div>
+            <button type="button" class="btn btn-primary mt-3">저장</button>
+        </form>
+
+
+    </div>
+</div>
+</body>
+</html>
