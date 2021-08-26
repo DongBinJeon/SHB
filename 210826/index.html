@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="kor">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주간식단정보</title>
+    <link rel="stylesheet" href="./style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&family=Playfair+Display&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./media.css">    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <section class="section">
+        <div class="container">
+            
+
+            <div class="section-header">
+                <h1 class="section-header-title">주간급식정보</h1>
+                <p>성일정보고</p>
+            </div>
+
+            <!-- products-row -->
+            <div class="meals-row">
+
+
+                <template id="tempMeal">
+                    <!-- product -->
+                    <div class="meal">
+                        <h4 class="meal_date">2021.08.23(월)</h4>
+                        <img class="meal-img" src="http://www.cnfl.cnehs.kr/upload/board/105559/2020/08/BOARD_202008250540056320.jpg" alt="meals">
+                        <div class="meal-info-wrapper">
+                            <span class="meal-info">잡곡밥<br/>맑은콩나물국<br/>잡채<br/>춘천닭갈비<br/>배추김치<br/>망고음료</span><br>
+                            <span class="meal-cal">886.5 Kcal</span>
+                        </div>
+                    </div>
+                    <!-- // product -->
+                </template>
+            </div>
+            <!-- // products-row -->
+        </div>
+    </section>
+
+</body>
+<script>
+    var startDt;
+    var endDt;
+    var tmpEndDt;
+
+
+    $(document).ready(function(){
+        setSchDt();
+        get_meal();
+
+        var win = $(window);
+        win.scroll(function(){
+            if($(document).height() - win.height() == win.scrollTop()){
+                setSchDt(tmpEndDt);
+                get_meal();
+            }
+        });
+
+
+    });
+
+
+    function get_meal(){
+        var get_data = {
+            "KEY":"d1a5b81b171d42eba89b5a0fc78cc639",
+            "Type":"json",
+            "pIndex":1,
+            "pSize":100,
+            "ATPT_OFCDC_SC_CODE":"J10",
+            "SD_SCHUL_CODE":7530167,
+            "MLSV_FROM_YMD":startDt,
+            "MLSV_TO_YMD":endDt
+        };
+        $.ajax({
+            url:"https://open.neis.go.kr/hub/mealServiceDietInfo",
+            type:"get",
+            data: get_data,
+            success:function(data){
+                try{
+                    var t = JSON.parse(data);
+                        
+                    var mealList = t.mealServiceDietInfo[1].row
+                    console.log(mealList);
+
+
+                    for(var i = 0; i < mealList.length; i++){
+                        var tempMeal = $($('#tempMeal').html());
+                        tempMeal.find('.meal_date').text(dateFormat(mealList[i].MLSV_YMD));
+                        tempMeal.find('.meal-info').html(mealList[i].DDISH_NM);
+                        tempMeal.find('.meal-cal').text(mealList[i].CAL_INFO);
+                        $('.meals-row').append(tempMeal);
+                    }
+
+                }catch(e){
+                    alert(e);
+                }
+            },
+            error:function(){
+                    alert("접속실패");
+            }
+        });
+    }
+
+    function dateFormat(date){  
+        var dateStr = date.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3');
+        var week = ['일', '월', '화', '수', '목', '금', '토'];
+        var dayOfWeek = week[new Date(dateStr).getDay()];
+        return dateStr + '(' + dayOfWeek + ')';
+    }
+
+    function setSchDt(strDate){
+
+        if(strDate == undefined){
+            curr = new Date();    
+        }else{
+            curr = new Date(strDate);
+            curr.setDate(curr.getDate()+1);
+        }
+
+
+        var first = curr.getDate() - curr.getDay();
+        var last = first + 6;
+
+
+
+        startDt = new Date(curr.setDate(first)).toISOString().substring(0,10).replaceAll('-','');
+        tmpEndDt = new Date(curr.setDate(last)).toISOString().substring(0,10);
+        endDt = tmpEndDt.replaceAll('-','');
+    }
+
+
+    
+
+
+</script>
+</html>
